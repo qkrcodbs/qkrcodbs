@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <!-- Header -->
+    <header class="bg-gray-400  shadow-sm p-4 flex justify-between items-center">
+        <h1 class="text-3xl font-bold">Constant</h1>
+    </header>
+
+    <div class="flex">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white p-4 shadow-md h-screen">
+
+            <div class="flex flex-col items-center gap-3 mt-3">
+
+                {% if session.get("user") %}
+
+                <div class="w-20 h-20 bg-gray-300 rounded-full"></div>
+                <p class="font-semibold">{{ session["user"] }}</p>
+
+                <a href="/logout">
+                    <button class="bg-red-500 text-white px-6 py-2 rounded-lg w-40">
+                        로그아웃
+                    </button>
+                </a>
+
+                {% else %}
+
+                <a href="/login">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg w-40 transition">
+                        로그인
+                    </button>
+                </a>
+
+                <a href="/signup">
+                    <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg w-40 transition">
+                        회원가입
+                    </button>
+                </a>
+
+                {% endif %}
+
+            </div>
+
+            <nav class="mt-6">
+                <ul class="space-y-3 text-gray-700">
+                    <a href="/">
+                        <li class="font-bold">🏠 홈</li>
+                    </a>
+                    <li class="font-bold">📅 일정표</li>
+                    <a href="/tasks">
+                        <li>- 수행평가</li>
+                    </a>
+                    <li>- 신청 날짜</li>
+                    <li>- 주요 행사</li>
+                    <li class="mt-4 font-bold">📝 나의 캘린더</li>
+                    <li>- 일정 추가</li>
+                    <li class="mt-4 font-bold">⭐ 피드백</li>
+                </ul>
+            </nav>
+
+        </aside>
+
+        <!-- 🔥 Main Content (수행평가 페이지 삽입) -->
+        <main class="flex-1 p-8">
+
+            <!-- 제목 -->
+            <h1 class="text-2xl font-bold mb-6">✏️ 수행평가 안내</h1>
+
+            <!-- 검색 / 필터 -->
+            <form method="POST" class="flex flex-wrap gap-3 mb-6">
+
+                <select name="grade" class="border px-3 py-2 rounded">
+                    <option value="전체">학년</option>
+                    <option value="1">1학년</option>
+                    <option value="2">2학년</option>
+                </select>
+
+                <select name="class" class="border px-3 py-2 rounded">
+                    <option value="전체">반</option>
+                    <option value="1">1반</option>
+                    <option value="2">2반</option>
+                    <option value="3">3반</option>
+                </select>
+
+                <select name="sort" class="border px-3 py-2 rounded">
+                    <option value="">최신 등록순</option>
+                    <option value="deadline">마감 임박순</option>
+                    <option value="name">이름순</option>
+
+                </select>
+
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    검색
+                </button>
+
+            </form>
+
+            <!-- 리스트 -->
+            <div class="space-y-4">
+
+                {% if tasks|length == 0 %}
+                <p class="text-gray-500">등록된 수행평가가 없습니다.</p>
+                {% endif %}
+
+                {% for t in tasks %}
+                <div
+                    class="bg-white p-5 rounded-2xl shadow flex justify-between items-center hover:shadow-lg transition">
+
+                    <!-- 왼쪽 -->
+                    <div>
+                        <h2 class="text-lg font-bold">{{ t.title }}</h2>
+                        <p class="text-gray-500">{{ t.grade }}학년 {{ t.class }}반</p>
+
+                        <p class="mt-1
+                            {% if t.d_day <= 1 %}
+                                text-red-500
+                            {% elif t.d_day <= 3 %}
+                                text-orange-500
+                            {% else %}
+                                text-gray-600
+                            {% endif %}
+                        ">
+                            D-{{ t.d_day }}
+                        </p>
+                    </div>
+
+                    <!-- 오른쪽 버튼 -->
+                    <div class="flex gap-2">
+
+                        <button class="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400">
+                            자세히 보기
+                        </button>
+
+                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                            캘린더 추가
+                        </button>
+
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
